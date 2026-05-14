@@ -1199,8 +1199,3 @@ A **Arquitetura Hexagonal** permite criar aplicações:
 
 Este projeto demonstra como aplicar esses conceitos em uma aplicação **Spring Boot** real, mantendo o domínio puro e as dependências bem isoladas.
 
----
-
-**Documentação criada em**: 14/05/2026  
-**Versão do Projeto**: 0.0.1-SNAPSHOT  
-**Autor**: GitHub Copilot CLI
