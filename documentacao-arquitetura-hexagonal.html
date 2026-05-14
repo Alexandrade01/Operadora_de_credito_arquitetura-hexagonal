@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação - Arquitetura Hexagonal - Operadora de Cartão de Crédito</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 4px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            border-left: 5px solid #3498db;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #34495e;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+        
+        h4 {
+            color: #555;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        
+        pre code {
+            background: none;
+            color: #ecf0f1;
+            padding: 0;
+        }
+        
+        .box {
+            background: #ecf0f1;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 3px;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+        
+        .success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        
+        .info {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+        }
+        
+        .diagram {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            overflow-x: auto;
+            font-size: 0.85em;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #3498db;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .check {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .cross {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        
+        .toc h2 {
+            margin-top: 0;
+            border: none;
+            padding: 0;
+        }
+        
+        .toc ul {
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .toc li {
+            padding: 5px 0;
+        }
+        
+        .toc a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid #ecf0f1;
+            margin: 30px 0;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #ecf0f1;
+            text-align: center;
+            color: #7f8c8d;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+            
+            pre {
+                page-break-inside: avoid;
+            }
+            
+            h1, h2, h3, h4 {
+                page-break-after: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📐 Documentação - Arquitetura Hexagonal</h1>
+        <p class="subtitle">Operadora de Cartão de Crédito</p>
+        
+        <div class="toc">
+            <h2>📚 Índice</h2>
+            <ul>
+                <li><a href="#o-que-e">1. O que é Arquitetura Hexagonal</a></li>
+                <li><a href="#conceitos">2. Conceitos Fundamentais</a></li>
+                <li><a href="#beneficios">3. Benefícios da Arquitetura Hexagonal</a></li>
+                <li><a href="#arquitetura-projeto">4. Arquitetura Hexagonal no Projeto</a></li>
+                <li><a href="#estrutura">5. Estrutura do Projeto</a></li>
+                <li><a href="#fluxo">6. Fluxo de Dados</a></li>
+                <li><a href="#componentes">7. Componentes da Aplicação</a></li>
+                <li><a href="#exemplos">8. Exemplos Práticos</a></li>
+                <li><a href="#regras">9. Regras de Negócio</a></li>
+                <li><a href="#testes">10. Como Testar</a></li>
+            </ul>
+        </div>
+        
+        <hr>
+        
+        <h2 id="o-que-e">🏛️ O que é Arquitetura Hexagonal</h2>
+        
+        <p>A <strong>Arquitetura Hexagonal</strong>, também conhecida como <strong>Ports and Adapters</strong> (Portas e Adaptadores), é um padrão arquitetural criado por <strong>Alistair Cockburn</strong> em 2005. O objetivo principal é criar aplicações que sejam:</p>
+        
+        <ul>
+            <li><strong>Independentes de frameworks</strong></li>
+            <li><strong>Testáveis</strong></li>
+            <li><strong>Independentes da interface de usuário</strong></li>
+            <li><strong>Independentes do banco de dados</strong></li>
+            <li><strong>Independentes de qualquer agente externo</strong></li>
+        </ul>
+        
+        <h3>Por que "Hexagonal"?</h3>
+        
+        <p>O nome "hexagonal" vem da representação visual do padrão, onde o núcleo da aplicação (domínio) está no centro de um hexágono, e os lados representam diferentes portas de entrada e saída.</p>
+        
+        <div class="diagram">
+         ┌───────────────────────────────────┐
+         │     Adaptadores de Entrada        │
+         │  (Controllers, CLI, Listeners)    │
+         └───────────────┬───────────────────┘
+                         │
+         ┌───────────────▼───────────────────┐
+         │     Portas de Entrada (in)        │
+         │        (Use Cases)                │
+         └───────────────┬───────────────────┘
+                         │
+         ┌───────────────▼───────────────────┐
+         │         DOMÍNIO (Core)            │
+         │    Regras de Negócio Puras        │
+         │   (Entidades e Lógica de          │
+         │         Negócio)                  │
+         └───────────────┬───────────────────┘
+                         │
+         ┌───────────────▼───────────────────┐
+         │     Portas de Saída (out)         │
+         │      (Repositórios, APIs)         │
+         └───────────────┬───────────────────┘
+                         │
+         ┌───────────────▼───────────────────┐
+         │     Adaptadores de Saída          │
+         │   (JPA, HTTP Client, Cache)       │
+         └───────────────────────────────────┘
+        </div>
+        
+        <hr>
+        
+        <h2 id="conceitos">🧩 Conceitos Fundamentais</h2>
+        
+        <h3>1. Domínio (Domain/Core)</h3>
+        
+        <p>O <strong>domínio</strong> é o coração da aplicação. Contém:</p>
+        
+        <ul>
+            <li><strong>Entidades de domínio</strong>: Objetos que representam conceitos do negócio</li>
+            <li><strong>Regras de negócio</strong>: Lógica que define como a aplicação funciona</li>
+            <li><strong>Exceções de domínio</strong>: Erros que representam violações de regras de negócio</li>
+        </ul>
+        
+        <div class="box success">
+            <p><strong>Características importantes:</strong></p>
+            <ul>
+                <li><span class="check">✅</span> Não depende de frameworks (Spring, Hibernate, etc.)</li>
+                <li><span class="check">✅</span> Não conhece banco de dados, APIs externas ou interfaces</li>
+                <li><span class="check">✅</span> É totalmente testável sem dependências externas</li>
+                <li><span class="check">✅</span> Contém a lógica mais importante da aplicação</li>
+            </ul>
+        </div>
+        
+        <h3>2. Portas (Ports)</h3>
+        
+        <p>As <strong>portas</strong> são <strong>interfaces</strong> que definem contratos de comunicação. Existem dois tipos:</p>
+        
+        <h4>Portas de Entrada (Input Ports / Driving Ports)</h4>
+        
+        <ul>
+            <li><strong>Definem o que a aplicação oferece</strong> (Use Cases)</li>
+            <li>São <strong>implementadas</strong> pelo núcleo da aplicação</li>
+            <li>São <strong>chamadas</strong> pelos adaptadores de entrada</li>
+        </ul>
+        
+        <p><strong>Exemplo:</strong> <code>SolicitarCartaoUseCase</code>, <code>BuscarClientePorCpfUseCase</code></p>
+        
+        <h4>Portas de Saída (Output Ports / Driven Ports)</h4>
+        
+        <ul>
+            <li><strong>Definem o que a aplicação precisa</strong> (dependências)</li>
+            <li>São <strong>implementadas</strong> pelos adaptadores de saída</li>
+            <li>São <strong>chamadas</strong> pelo núcleo da aplicação</li>
+        </ul>
+        
+        <p><strong>Exemplo:</strong> <code>ClienteRepository</code></p>
+        
+        <h3>3. Adaptadores (Adapters)</h3>
+        
+        <p>Os <strong>adaptadores</strong> são implementações concretas que conectam o mundo externo ao domínio.</p>
+        
+        <h4>Adaptadores de Entrada (Input Adapters)</h4>
+        
+        <ul>
+            <li><strong>Recebem requisições</strong> do mundo externo</li>
+            <li><strong>Convertem</strong> dados externos para o formato do domínio</li>
+            <li><strong>Chamam</strong> as portas de entrada (Use Cases)</li>
+        </ul>
+        
+        <p><strong>Exemplos:</strong> Controllers REST, Listeners de mensageria, Interfaces CLI, Jobs agendados</p>
+        
+        <h4>Adaptadores de Saída (Output Adapters)</h4>
+        
+        <ul>
+            <li><strong>Implementam</strong> as portas de saída</li>
+            <li><strong>Convertem</strong> dados do domínio para o formato externo</li>
+            <li><strong>Comunicam</strong> com sistemas externos</li>
+        </ul>
+        
+        <p><strong>Exemplos:</strong> Repositórios JPA, Clients HTTP, Serviços de mensageria, Sistemas de cache</p>
+        
+        <hr>
+        
+        <h2 id="beneficios">🎯 Benefícios da Arquitetura Hexagonal</h2>
+        
+        <h3>1. Testabilidade</h3>
+        
+        <p>O domínio pode ser testado <strong>sem subir frameworks</strong>, banco de dados ou APIs externas.</p>
+        
+        <pre><code>@Test
+void deveGerarCartaoParaNovoCliente() {
+    // Arrange
+    ClienteRepository mockRepository = mock(ClienteRepository.class);
+    SolicitarCartaoUseCase useCase = new IClienteServiceImpl(mockRepository);
+    
+    // Act & Assert
+    ClienteDomain resultado = useCase.solicitarCartao(cliente);
+    assertNotNull(resultado.getCartao());
+}</code></pre>
+        
+        <h3>2. Independência de Framework</h3>
+        
+        <p>O domínio <strong>não conhece Spring</strong>, JPA, ou qualquer outro framework. Isso significa que:</p>
+        
+        <ul>
+            <li>Você pode trocar de framework sem reescrever a lógica de negócio</li>
+            <li>Você não está preso a versões específicas de frameworks</li>
+            <li>Atualizações de frameworks não afetam o núcleo da aplicação</li>
+        </ul>
+        
+        <h3>3. Flexibilidade para Mudanças</h3>
+        
+        <p>Trocar a tecnologia de persistência é <strong>simples</strong>:</p>
+        
+        <div class="box info">
+            <p><strong>Exemplo:</strong> JPA → MongoDB</p>
+            <p>ClienteRepositoryJpaImpl → ClienteRepositoryMongoImpl</p>
+            <p>O domínio permanece intocado!</p>
+        </div>
+        
+        <h3>4. Clareza e Organização</h3>
+        
+        <p>Cada camada tem <strong>responsabilidade bem definida</strong>:</p>
+        
+        <ul>
+            <li><strong>Domínio</strong>: regras de negócio</li>
+            <li><strong>Portas</strong>: contratos</li>
+            <li><strong>Adaptadores</strong>: integração com o mundo externo</li>
+        </ul>
+        
+        <h3>5. Manutenibilidade</h3>
+        
+        <p>O código é organizado por <strong>responsabilidade funcional</strong>, não por tipo técnico.</p>
+        
+        <hr>
+        
+        <h2 id="arquitetura-projeto">🏗️ Arquitetura Hexagonal no Projeto</h2>
+        
+        <h3>Visão Geral</h3>
+        
+        <p>O projeto <strong>Operadora de Cartão de Crédito</strong> implementa a Arquitetura Hexagonal para gerenciar:</p>
+        
+        <ul>
+            <li>Solicitação de cartões de crédito</li>
+            <li>Cadastro de clientes</li>
+            <li>Geração automática de dados do cartão</li>
+            <li>Validação de regras de negócio</li>
+        </ul>
+        
+        <h3>Tecnologias Utilizadas</h3>
+        
+        <table>
+            <tr>
+                <th>Tecnologia</th>
+                <th>Versão</th>
+                <th>Finalidade</th>
+            </tr>
+            <tr>
+                <td>Java</td>
+                <td>21</td>
+                <td>Linguagem de programação</td>
+            </tr>
+            <tr>
+                <td>Spring Boot</td>
+                <td>3.4.1</td>
+                <td>Framework de aplicação</td>
+            </tr>
+            <tr>
+                <td>Spring Data JPA</td>
+                <td>-</td>
+                <td>Persistência de dados</td>
+            </tr>
+            <tr>
+                <td>H2 Database</td>
+                <td>-</td>
+                <td>Banco de dados em memória</td>
+            </tr>
+            <tr>
+                <td>MapStruct</td>
+                <td>1.5.5</td>
+                <td>Mapeamento de objetos</td>
+            </tr>
+            <tr>
+                <td>Lombok</td>
+                <td>-</td>
+                <td>Redução de boilerplate</td>
+            </tr>
+            <tr>
+                <td>Jakarta Validation</td>
+                <td>-</td>
+                <td>Validação de dados</td>
+            </tr>
+        </table>
+        
+        <hr>
+        
+        <h2 id="estrutura">📁 Estrutura do Projeto</h2>
+        
+        <pre><code>src/main/java/com/example/operadoracartaocredito/
+│
+├── application/                          # Núcleo da aplicação
+│   ├── domain/                           # Entidades de domínio
+│   │   ├── CartaoDomain.java
+│   │   ├── ClienteDomain.java
+│   │   ├── EnderecoDomain.java
+│   │   └── exceptions/
+│   │       ├── ClienteJaPossuiCartaoException.java
+│   │       └── ClienteNaoEncontradoException.java
+│   │
+│   ├── ports/                            # Portas (contratos)
+│   │   ├── in/                           # Portas de ENTRADA
+│   │   │   ├── SolicitarCartaoUseCase.java
+│   │   │   └── BuscarClientePorCpfUseCase.java
+│   │   └── out/                          # Portas de SAÍDA
+│   │       └── ClienteRepository.java
+│   │
+│   └── services/                         # Implementação Use Cases
+│       ├── IClienteServiceImpl.java
+│       └── GeraDadosCartaoService.java
+│
+└── adapters/                             # Adaptadores
+    ├── in/                               # Adaptadores de ENTRADA
+    │   ├── controller/
+    │   │   └── ClienteController.java
+    │   ├── dto/
+    │   │   ├── request/
+    │   │   │   ├── ClienteRequestDTO.java
+    │   │   │   └── EnderecoRequestDTO.java
+    │   │   └── response/
+    │   │       ├── ClienteResponseDTO.java
+    │   │       └── CartaoResponseDTO.java
+    │   └── handler/
+    │       └── GlobalExceptionHandler.java
+    │
+    ├── out/                              # Adaptadores de SAÍDA
+    │   ├── ClienteRepositoryImpl.java
+    │   ├── entities/
+    │   │   ├── CartaoEntity.java
+    │   │   ├── ClienteEntity.java
+    │   │   └── EnderecoEntity.java
+    │   └── repositories/
+    │       └── IClienteJpaRepository.java
+    │
+    └── mapper/
+        └── ClienteMapper.java</code></pre>
+        
+        <hr>
+        
+        <h2 id="fluxo">🔄 Fluxo de Dados</h2>
+        
+        <h3>Fluxo Completo de uma Requisição</h3>
+        
+        <div class="diagram">
+┌─────────────────────────────────────────────────┐
+│  1. Cliente HTTP faz POST /cliente com JSON     │
+└───────────────────┬─────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────────┐
+│  2. ADAPTADOR DE ENTRADA (ClienteController)    │
+│     - Recebe ClienteRequestDTO                  │
+│     - Valida dados com @Valid                   │
+│     - Converte DTO → Domain (via Mapper)        │
+└───────────────────┬─────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────────┐
+│  3. PORTA DE ENTRADA (SolicitarCartaoUseCase)   │
+│     - Interface que define o contrato           │
+└───────────────────┬─────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────────┐
+│  4. NÚCLEO (IClienteServiceImpl)                │
+│     - Valida se email já existe                 │
+│     - Gera dados do cartão                      │
+│     - Calcula limite baseado na renda           │
+└───────────────────┬─────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────────┐
+│  5. PORTA DE SAÍDA (ClienteRepository)          │
+│     - Interface que define contrato             │
+└───────────────────┬─────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────────┐
+│  6. ADAPTADOR DE SAÍDA (ClienteRepositoryImpl)  │
+│     - Converte Domain → Entity (via Mapper)     │
+│     - Usa JPA para persistir no H2              │
+└───────────────────┬─────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────────┐
+│  7. Retorno: HTTP 201 Created com JSON          │
+└─────────────────────────────────────────────────┘
+        </div>
+        
+        <hr>
+        
+        <h2 id="componentes">🔧 Componentes da Aplicação</h2>
+        
+        <h3>1. Entidades de Domínio</h3>
+        
+        <h4>ClienteDomain</h4>
+        <p>Representa um cliente no domínio:</p>
+        <ul>
+            <li>id, nome, email, idade, cpf</li>
+            <li>rendaMensal, dataVencimentoFatura</li>
+            <li>endereco (EnderecoDomain)</li>
+            <li>cartao (CartaoDomain)</li>
+        </ul>
+        
+        <h4>CartaoDomain</h4>
+        <p>Representa um cartão de crédito:</p>
+        <ul>
+            <li>numero (formato: XXXX-XXXX-XXXX-XXXX)</li>
+            <li>bandeira (Mastercard, Visa, Elo)</li>
+            <li>cvv (3 dígitos)</li>
+            <li>limite (calculado: 30% da renda)</li>
+        </ul>
+        
+        <h4>EnderecoDomain</h4>
+        <p>Representa um endereço:</p>
+        <ul>
+            <li>rua, numero, complemento</li>
+            <li>cidade, estado (UF), cep</li>
+        </ul>
+        
+        <h3>2. Exceções de Domínio</h3>
+        
+        <div class="box warning">
+            <h4>ClienteJaPossuiCartaoException</h4>
+            <p>Lançada quando cliente tenta solicitar cartão mas já possui um.</p>
+            <p><strong>HTTP Status:</strong> 409 Conflict</p>
+        </div>
+        
+        <div class="box warning">
+            <h4>ClienteNaoEncontradoException</h4>
+            <p>Lançada quando cliente não é encontrado pelo CPF.</p>
+            <p><strong>HTTP Status:</strong> 404 Not Found</p>
+        </div>
+        
+        <h3>3. Use Cases (Portas de Entrada)</h3>
+        
+        <ul>
+            <li><strong>SolicitarCartaoUseCase</strong>: Solicita cartão para novo cliente</li>
+            <li><strong>BuscarClientePorCpfUseCase</strong>: Busca cliente existente</li>
+        </ul>
+        
+        <h3>4. Serviços</h3>
+        
+        <h4>IClienteServiceImpl</h4>
+        <p>Implementa os use cases e contém lógica de negócio:</p>
+        <ul>
+            <li>Valida email duplicado</li>
+            <li>Gera cartão para novo cliente</li>
+            <li>Persiste dados via repositório</li>
+        </ul>
+        
+        <h4>GeraDadosCartaoService</h4>
+        <p>Serviço de domínio que gera dados do cartão:</p>
+        <ul>
+            <li>Gera número aleatório (formato válido)</li>
+            <li>Define bandeira aleatória</li>
+            <li>Gera CVV de 3 dígitos</li>
+            <li>Calcula limite (30% da renda)</li>
+        </ul>
+        
+        <hr>
+        
+        <h2 id="exemplos">💡 Exemplos Práticos</h2>
+        
+        <h3>Exemplo 1: Solicitar Cartão (Sucesso)</h3>
+        
+        <h4>Request:</h4>
+        <pre><code>POST http://localhost:8080/cliente
+Content-Type: application/json
+
+{
+  "nome": "Maria Silva",
+  "email": "maria@email.com",
+  "idade": 28,
+  "cpf": "123.456.789-10",
+  "rendaMensal": 5000.00,
+  "dataVencimentoFatura": "10",
+  "endereco": {
+    "rua": "Rua das Flores",
+    "numero": 123,
+    "cidade": "São Paulo",
+    "estado": "SP",
+    "cep": "01234-567"
+  }
+}</code></pre>
+        
+        <h4>Response (201 Created):</h4>
+        <pre><code>{
+  "id": 1,
+  "nome": "Maria Silva",
+  "email": "maria@email.com",
+  "cpf": "123.456.789-10",
+  "cartao": {
+    "numero": "5425-2334-3010-9903",
+    "bandeira": "Mastercard",
+    "cvv": "326",
+    "limite": 1500.00
+  }
+}</code></pre>
+        
+        <h3>Exemplo 2: Cliente Já Possui Cartão (Erro)</h3>
+        
+        <h4>Response (409 Conflict):</h4>
+        <pre><code>{
+  "status": 409,
+  "message": "Cliente com email maria@email.com já possui um cartão.",
+  "timestamp": "2026-05-14T01:00:00"
+}</code></pre>
+        
+        <h3>Exemplo 3: Erro de Validação</h3>
+        
+        <h4>Request com dados inválidos:</h4>
+        <pre><code>{
+  "nome": "Jo",
+  "email": "email-invalido",
+  "idade": 15,
+  "cpf": "123"
+}</code></pre>
+        
+        <h4>Response (400 Bad Request):</h4>
+        <pre><code>{
+  "status": 400,
+  "message": "Erro de validação",
+  "errors": {
+    "nome": "Nome deve ter entre 3 e 100 caracteres",
+    "email": "Email deve ser válido",
+    "idade": "Idade mínima é 18 anos",
+    "cpf": "CPF deve estar no formato XXX.XXX.XXX-XX"
+  }
+}</code></pre>
+        
+        <hr>
+        
+        <h2 id="regras">📋 Regras de Negócio</h2>
+        
+        <h3>1. Solicitação de Cartão</h3>
+        
+        <ul>
+            <li><span class="check">✅</span> Cliente deve ter <strong>no mínimo 18 anos</strong></li>
+            <li><span class="check">✅</span> Email deve ser <strong>único</strong> no sistema</li>
+            <li><span class="check">✅</span> CPF deve ser <strong>único</strong> no sistema</li>
+            <li><span class="check">✅</span> Cliente só pode ter <strong>um cartão</strong></li>
+            <li><span class="check">✅</span> Renda mensal deve ser <strong>positiva</strong></li>
+        </ul>
+        
+        <h3>2. Geração de Dados do Cartão</h3>
+        
+        <div class="box info">
+            <ul>
+                <li><strong>Número do cartão</strong>: gerado aleatoriamente (formato XXXX-XXXX-XXXX-XXXX)</li>
+                <li><strong>Bandeira</strong>: escolhida aleatoriamente (Mastercard, Visa, Elo)</li>
+                <li><strong>CVV</strong>: gerado aleatoriamente (3 dígitos)</li>
+                <li><strong>Limite</strong>: calculado como <strong>30% da renda mensal</strong></li>
+            </ul>
+        </div>
+        
+        <h4>Exemplo de cálculo de limite:</h4>
+        <pre><code>Renda mensal: R$ 5.000,00
+Limite = 5.000 × 0,30 = R$ 1.500,00</code></pre>
+        
+        <h3>3. Validações de Entrada</h3>
+        
+        <h4>Cliente:</h4>
+        <ul>
+            <li>Nome: 3-100 caracteres</li>
+            <li>Email: formato válido</li>
+            <li>Idade: 18-120 anos</li>
+            <li>CPF: formato XXX.XXX.XXX-XX ou 11 dígitos</li>
+            <li>Renda mensal: valor positivo</li>
+        </ul>
+        
+        <h4>Endereço:</h4>
+        <ul>
+            <li>Rua: 3-200 caracteres</li>
+            <li>Número: positivo</li>
+            <li>Cidade: 2-100 caracteres</li>
+            <li>Estado: 2 caracteres (sigla UF)</li>
+            <li>CEP: formato XXXXX-XXX ou 8 dígitos</li>
+        </ul>
+        
+        <hr>
+        
+        <h2 id="testes">🧪 Como Testar</h2>
+        
+        <h3>1. Compilar o Projeto</h3>
+        <pre><code>.\gradlew clean build</code></pre>
+        
+        <h3>2. Executar a Aplicação</h3>
+        <pre><code>.\gradlew bootRun</code></pre>
+        
+        <p>A aplicação estará disponível em: <code>http://localhost:8080</code></p>
+        
+        <h3>3. Testar Endpoints</h3>
+        
+        <h4>Solicitar Cartão (POST):</h4>
+        <pre><code>curl -X POST http://localhost:8080/cliente \
+  -H "Content-Type: application/json" \
+  -d '{"nome":"João Silva","email":"joao@email.com",...}'</code></pre>
+        
+        <h4>Buscar Cliente (GET):</h4>
+        <pre><code>curl -X GET "http://localhost:8080/cliente?cpf=123.456.789-10"</code></pre>
+        
+        <h3>4. Acessar Console H2</h3>
+        
+        <p>Console web disponível em: <code>http://localhost:8080/h2-console</code></p>
+        
+        <div class="box info">
+            <p><strong>Credenciais:</strong></p>
+            <ul>
+                <li>JDBC URL: <code>jdbc:h2:mem:testdb</code></li>
+                <li>Username: <code>sa</code></li>
+                <li>Password: (vazio)</li>
+            </ul>
+        </div>
+        
+        <h4>Queries úteis:</h4>
+        <pre><code>-- Ver todos os clientes
+SELECT * FROM clientes;
+
+-- Ver clientes com cartões
+SELECT c.nome, c.email, ca.numero, ca.bandeira, ca.limite
+FROM clientes c
+INNER JOIN cartoes ca ON c.cartao_id = ca.id;</code></pre>
+        
+        <hr>
+        
+        <h2>🎯 Benefícios Alcançados no Projeto</h2>
+        
+        <div class="box success">
+            <h3>1. Testabilidade</h3>
+            <p>Domínio pode ser testado sem frameworks ou banco de dados</p>
+            
+            <h3>2. Independência de Framework</h3>
+            <p>Domínio não conhece Spring ou JPA</p>
+            
+            <h3>3. Flexibilidade</h3>
+            <p>Trocar JPA por MongoDB é simples e não afeta o domínio</p>
+            
+            <h3>4. Clareza</h3>
+            <p>Cada camada tem responsabilidade bem definida</p>
+            
+            <h3>5. Tratamento de Erros Robusto</h3>
+            <p>Exceções específicas e mensagens claras</p>
+        </div>
+        
+        <hr>
+        
+        <h2>📖 Próximos Passos Sugeridos</h2>
+        
+        <h3>Testes Automatizados</h3>
+        <ul>
+            <li>Testes unitários do domínio</li>
+            <li>Testes de integração</li>
+            <li>Testes de contrato da API</li>
+        </ul>
+        
+        <h3>Novos Use Cases</h3>
+        <ul>
+            <li>Atualizar limite do cartão</li>
+            <li>Consultar fatura</li>
+            <li>Bloquear/desbloquear cartão</li>
+        </ul>
+        
+        <h3>Melhorias Técnicas</h3>
+        <ul>
+            <li>Swagger/OpenAPI para documentação</li>
+            <li>Paginação na busca</li>
+            <li>Logs estruturados</li>
+            <li>Métricas e observabilidade</li>
+        </ul>
+        
+        <h3>Segurança</h3>
+        <ul>
+            <li>Implementar autenticação (JWT)</li>
+            <li>Autorização (Spring Security)</li>
+            <li>Criptografar dados sensíveis</li>
+        </ul>
+        
+        <hr>
+        
+        <h2>📚 Referências</h2>
+        
+        <h3>Arquitetura Hexagonal</h3>
+        <ul>
+            <li><strong>Artigo original</strong>: Alistair Cockburn - Hexagonal Architecture</li>
+            <li><strong>Clean Architecture</strong>: Robert C. Martin</li>
+            <li><strong>Domain-Driven Design</strong>: Eric Evans</li>
+        </ul>
+        
+        <h3>Spring Boot</h3>
+        <ul>
+            <li>Documentação oficial: https://spring.io/projects/spring-boot</li>
+            <li>Spring Data JPA</li>
+            <li>Bean Validation (Jakarta)</li>
+        </ul>
+        
+        <h3>Ferramentas</h3>
+        <ul>
+            <li>MapStruct: https://mapstruct.org/</li>
+            <li>Lombok: https://projectlombok.org/</li>
+            <li>Gradle: https://gradle.org/</li>
+        </ul>
+        
+        <hr>
+        
+        <div class="box success">
+            <h2>👥 Conclusão</h2>
+            
+            <p>A <strong>Arquitetura Hexagonal</strong> permite criar aplicações:</p>
+            
+            <ul>
+                <li><span class="check">✅</span> <strong>Testáveis</strong>: sem dependências de frameworks</li>
+                <li><span class="check">✅</span> <strong>Flexíveis</strong>: fáceis de mudar e evoluir</li>
+                <li><span class="check">✅</span> <strong>Organizadas</strong>: código claro e estruturado</li>
+                <li><span class="check">✅</span> <strong>Independentes</strong>: sem acoplamento com tecnologias</li>
+            </ul>
+            
+            <p>Este projeto demonstra como aplicar esses conceitos em uma aplicação <strong>Spring Boot</strong> real, mantendo o domínio puro e as dependências bem isoladas.</p>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Documentação criada em:</strong> 14/05/2026</p>
+            <p><strong>Versão do Projeto:</strong> 0.0.1-SNAPSHOT</p>
+            <p><strong>Autor:</strong> GitHub Copilot CLI</p>
+        </div>
+    </div>
+    
+    <script>
+        // Script para melhorar a impressão em PDF
+        window.onload = function() {
+            if (window.matchMedia) {
+                var mediaQueryList = window.matchMedia('print');
+                mediaQueryList.addListener(function(mql) {
+                    if (mql.matches) {
+                        console.log('Preparando para impressão...');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
